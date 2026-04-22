@@ -52,6 +52,7 @@ pipeline {
             agent {
                 docker {
                     image "sonarsource/sonar-scanner-cli:latest"
+                    args "--network lab3-net"
                     reuseNode true
                 }
             }
