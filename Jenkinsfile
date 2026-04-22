@@ -58,7 +58,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    sh "sonar-scanner -Dsonar.projectVersion=${env.APP_SEMANTIC_VERSION}"
+                    sh "sonar-scanner -Dsonar.projectVersion=${env.APP_SEMANTIC_VERSION} -Dsonar.javascript.node.maxspace=1024"
                 }
             }
         }
