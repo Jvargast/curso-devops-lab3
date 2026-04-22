@@ -2,14 +2,14 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "curso-devops-lab3"
+        IMAGE_NAME = 'curso-devops-lab3'
     }
 
     stages {
-        stage("Version") {
+        stage('Version') {
             agent {
                 docker {
-                    image "node:24"
+                    image 'node:24'
                     reuseNode true
                 }
             }
@@ -24,46 +24,46 @@ pipeline {
             }
         }
 
-        stage("Dependencias") {
+        stage('Dependencias') {
             agent {
                 docker {
-                    image "node:24"
+                    image 'node:24'
                     reuseNode true
                 }
             }
             steps {
-                sh "npm ci"
+                sh 'npm ci'
             }
         }
 
-        stage("Tests con cobertura") {
+        stage('Tests con cobertura') {
             agent {
                 docker {
-                    image "node:24"
+                    image 'node:24'
                     reuseNode true
                 }
             }
             steps {
-                sh "npm run test:cov"
+                sh 'npm run test:cov'
             }
         }
 
-        stage("SonarQube") {
+        stage('SonarQube') {
             agent {
                 docker {
-                    image "sonarsource/sonar-scanner-cli:latest"
-                    args "--network lab3-net"
+                    image 'sonarsource/sonar-scanner-cli:latest'
+                    args "--entrypoint='' --network lab3-net"
                     reuseNode true
                 }
             }
             steps {
-                withSonarQubeEnv("sonarqube") {
+                withSonarQubeEnv('sonarqube') {
                     sh "sonar-scanner -Dsonar.projectVersion=${env.APP_SEMANTIC_VERSION}"
                 }
             }
         }
 
-        stage("Quality Gate") {
+        stage('Quality Gate') {
             steps {
                 timeout(time: 5, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
@@ -71,19 +71,19 @@ pipeline {
             }
         }
 
-        stage("Build app") {
+        stage('Build app') {
             agent {
                 docker {
-                    image "node:24"
+                    image 'node:24'
                     reuseNode true
                 }
             }
             steps {
-                sh "npm run build"
+                sh 'npm run build'
             }
         }
 
-        stage("Build Docker image") {
+        stage('Build Docker image') {
             steps {
                 sh "docker build -t ${env.IMAGE_NAME}:local ."
             }
