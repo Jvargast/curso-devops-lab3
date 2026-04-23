@@ -9,7 +9,7 @@ COPY . .
 RUN npm run build
 
 
-FROM node:24-alpine
+FROM node:24-slim
 
 WORKDIR /usr/app
 
